@@ -1,8 +1,10 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
-
 // Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+//Estilos del editor de texto MediumEditor
+@import 'devjobs'

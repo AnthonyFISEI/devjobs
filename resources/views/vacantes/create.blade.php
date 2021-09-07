@@ -164,25 +164,44 @@
         </div>
 
         <div class="mb-5">
-            <label for="descripcion" class="block text-gray-700 text-sm mb-2">Imagen Vacante:</label>
+            <label for="imagen" class="block text-gray-700 text-sm mb-2">Imagen Vacante:</label>
 
             <div class="dropzone rounded bg-gray-100" id="dropzoneDevJobs"></div>
 
-            <input type="hidden" name="imagen" id="imagen">
+            <input type="hidden" name="imagen" id="imagen" value="{{old('imagen')}}">
+
+            @error('imagen')
+            <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+            px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                <strong class="font-bold"> Error! </strong>
+                <span class="block">{{ $message }}</span>
+            </div>
+            @enderror
 
             <div id="error"></div>
         </div>
 
 
         <div class="mb-5">
-            <label for="skills" class="block text-gray-700 text-sm mb-2">Habilidades y Conocimientos:</label>
+            <label for="skills" class="block text-gray-700 text-sm mb-5">Habilidades y Conocimientos:
+                <span class="text-xs">(Elige al menos 3)</span>
+            </label>
             @php
              $skills = ['HTML5', 'CSS3', 'CSSGrid', 'Flexbox', 'JavaScript', 'jQuery', 'Node', 'Angular', 'VueJS', 'ReactJS', 'React Hooks', 'Redux', 'Apollo', 'GraphQL', 'TypeScript', 'PHP', 'Laravel', 'Symfony', 'Python', 'Django', 'ORM', 'Sequelize', 'Mongoose', 'SQL', 'MVC', 'SASS', 'WordPress', 'Express', 'Deno', 'React Native', 'Flutter', 'MobX', 'C#', 'Ruby on Rails']
             @endphp
             <lista-skills :skills="{{json_encode($skills)}}"
+            :oldskills="{{json_encode(old('skills'))}}"
             >
                
             </lista-skills>
+
+            @error('skills')
+            <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+            px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block">{{ str_replace('skills', 'Habilidades y Conocimientos', $message) }}</span>
+            </div>
+            @enderror
         </div>
 
         <button type="submit"
@@ -234,6 +253,21 @@
                 headers:{
                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                 },
+                init: function(){
+                    if(document.querySelector('#imagen').value.trim()){
+
+                        let imagenPublicada={};
+
+                        imagenPublicada.size =1234;
+                        imagenPublicada.name = document.querySelector('#imagen').value;
+
+                        this.options.addedfile.call(this, imagenPublicada);
+                        this.options.thumbnail.call(this, imagenPublicada,`/storage/vacantes/${imagenPublicada.name}`);
+                        imagenPublicada.previewElement.classList.add('dz-sucess');
+                        imagenPublicada.previewElement.classList.add('dz-complete');
+
+                    }
+                },
                 success: function(file,response){
                     // console.log(response);
                     // console.log(file)
@@ -275,7 +309,7 @@
                     // console.log(document.getElementsByClassName('dz-preview dz-file-preview dz-complete'));
 
                     params = {
-                        imagen: file.nombreServidor
+                        imagen: file.nombreServidor ?? document.querySelector('#imagen').value
                     }
                     axios.post('/vacantes/borrarimagen', params)
                         .then(respuesta => console.log(respuesta))

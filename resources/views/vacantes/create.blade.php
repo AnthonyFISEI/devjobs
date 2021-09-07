@@ -14,13 +14,25 @@
 
     <h1 class="text-2xl text-center mt-10">Nueva Vacante</h1>
 
-    <form action="" class="max-w-lg mx-auto my-10">
+    <form action="{{route('vacantes.store')}}" 
+        method="POST"
+        class="max-w-lg mx-auto my-10">
+        @csrf
         <div class="mb-5">
             <label for="titulo" class="block text-gray-700 text-sm mb-2">Título Vacante:</label>
             
             <input id="titulo" type="text"
             class="p-3 bg-gray-100 rounded form-input w-full @error('email') is-invalid @enderror"
-            name="titulo">
+            name="titulo" placeholder="Título de la vacante"
+            value="{{old('titulo')}}">
+
+            @error('titulo')
+                <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+                px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block">{{ str_replace('titulo', 'título', $message) }}</span>
+                </div>
+            @enderror
 
         </div>
 
@@ -35,11 +47,21 @@
                 <option value="" disabled selected>- Selecciona -</option>
 
                 @foreach($categorias as $categoria)
-                    <option value="{{$categoria->id}}">
+                    <option 
+                    {{old('categoria') == $categoria->id ? 'selected' : ''}}
+                    value="{{$categoria->id}}">
                     {{$categoria->nombre}}</option>
                     
                 @endforeach
             </select>
+
+            @error('categoria')
+            <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+            px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block">{{ str_replace('categoria', 'categoría', $message) }}</span>
+            </div>
+            @enderror
         </div>
 
 
@@ -53,17 +75,27 @@
                 <option value="" disabled selected>- Selecciona -</option>
 
                 @foreach($experiencias as $experiencia)
-                    <option value="{{$experiencia->id}}">
+                    <option 
+                    {{old('experiencia')==$experiencia->id ? 'selected' : ''}}
+                    value="{{$experiencia->id}}">
                     {{$experiencia->nombre}}</option>
                     
                 @endforeach
             </select>
+
+            @error('experiencia')
+            <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+            px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block">{{ $message }}</span>
+            </div>
+            @enderror
         </div>
 
 
         
         <div class="mb-5">
-            <label for="ubicacion" class="block text-gray-700 text-sm mb-2">Ubicacion:</label>
+            <label for="ubicacion" class="block text-gray-700 text-sm mb-2">Ubicación:</label>
 
             <select name="ubicacion" id="ubicacion"
             class="block appearance-none w-full border border-gray-200 text-gray-700 rounded 
@@ -72,11 +104,21 @@
                 <option value="" disabled selected>- Selecciona -</option>
 
                 @foreach($ubicaciones as $ubicacion)
-                    <option value="{{$ubicacion->id}}">
+                    <option 
+                    {{old('ubicacion')==$ubicacion->id ? 'selected' : ''}}
+                    value="{{$ubicacion->id}}">
                     {{$ubicacion->nombre}}</option>
                     
                 @endforeach
             </select>
+
+            @error('ubicacion')
+            <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+            px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block">{{ str_replace('ubicacion', 'ubicación', $message) }}</span>
+            </div>
+            @enderror
         </div>
 
 
@@ -90,18 +132,35 @@
                 <option value="" disabled selected>- Selecciona -</option>
 
                 @foreach($salarios as $salario)
-                    <option value="{{$salario->id}}">
+                    <option 
+                    {{old('salario')==$salario->id ? 'selected' : ''}}
+                    value="{{$salario->id}}">
                     {{$salario->nombre}}</option>
                     
                 @endforeach
             </select>
+            @error('salario')
+            <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+            px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                <strong class="font-bold"> Error! </strong>
+                <span class="block">{{ $message }}</span>
+            </div>
+            @enderror
         </div>
 
         <div class="mb-5">
             <label for="descripcion" class="block text-gray-700 text-sm mb-2">Descripción del Puesto:</label>
 
             <div class="editable p-3 bg-gray-100 rounded form-input w-full text-gray-700"></div>
-            <input type="hidden" name="descripcion" id="descripcion">
+            <input type="hidden" name="descripcion" id="descripcion" value="{{old('descripcion')}}">
+
+            @error('descripcion')
+            <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
+            px-4 py-3 rounded relative mt-3 mb-6" role="alert">
+                <strong class="font-bold"> Error! </strong>
+                <span class="block">{{ $message }}</span>
+            </div>
+            @enderror
         </div>
 
         <div class="mb-5">
@@ -109,7 +168,21 @@
 
             <div class="dropzone rounded bg-gray-100" id="dropzoneDevJobs"></div>
 
+            <input type="hidden" name="imagen" id="imagen">
+
             <div id="error"></div>
+        </div>
+
+
+        <div class="mb-5">
+            <label for="skills" class="block text-gray-700 text-sm mb-2">Habilidades y Conocimientos:</label>
+            @php
+             $skills = ['HTML5', 'CSS3', 'CSSGrid', 'Flexbox', 'JavaScript', 'jQuery', 'Node', 'Angular', 'VueJS', 'ReactJS', 'React Hooks', 'Redux', 'Apollo', 'GraphQL', 'TypeScript', 'PHP', 'Laravel', 'Symfony', 'Python', 'Django', 'ORM', 'Sequelize', 'Mongoose', 'SQL', 'MVC', 'SASS', 'WordPress', 'Express', 'Deno', 'React Native', 'Flutter', 'MobX', 'C#', 'Ruby on Rails']
+            @endphp
+            <lista-skills :skills="{{json_encode($skills)}}"
+            >
+               
+            </lista-skills>
         </div>
 
         <button type="submit"
@@ -131,7 +204,7 @@
             // Medium Editor
             const editor = new MediumEditor('.editable',{
                 toolbar:{
-                    buttons:['bold','italic','underline','quote','anchor','justifyLeft','justifyCenter','justifyRight','justifyFull','orderedList','unorderedList','h2','h3'],
+                    buttons:['bold','italic','underline','quote','anchor','justifyLeft','justifyCenter','justifyRight','justifyFull','orderedlist','unorderedlist','h2','h3'],
                     static: true,
                     sticky:true
                 },
@@ -139,13 +212,16 @@
                     text: 'Información de la vacante'
                 }
             });
-
+            
+            // agrega al input hidden lo que el usuario escribe en medium editor
             editor.subscribe('editableInput', function(eventObj, editable){
                 const contenido = editor.getContent();
                 document.querySelector('#descripcion').value = contenido;
             })
 
+            //Llena el editor con el contenido del input hidden
 
+            editor.setContent(document.querySelector('#descripcion').value);
             // Editor Dropzone
 
             const dropzoneDevJobs = new Dropzone('#dropzoneDevJobs',{
@@ -161,7 +237,14 @@
                 success: function(file,response){
                     // console.log(response);
                     // console.log(file)
+                    console.log(response.correcto);
                     document.querySelector('#error').textContent = '';
+
+                    // Coloca la respuesta de servidor en el input hidden
+                    document.querySelector('#imagen').value=response.correcto;
+
+                    // Añadir al objeto de archivo el nombre dela Imagen en el servidor
+                    file.nombreServidor = response.correcto;
                 },
                 error: function(file,response){
                     // console.log(response);
@@ -171,14 +254,31 @@
                 maxfilesexceeded: function(file){
                     //  console.log(this.files);
 
-                     if(this.files[1] != null){
+                    if(this.files[1] != null){
                          this.removeFile(this.files[0]); //Eliminar el archivo anterior
-                         this.addFile(file) //Agrega el nuevo archivo
-                     }
+                         this.addFile(file); //Agrega el nuevo archivo
+                         
+                    var borrar=document.getElementsByClassName('dz-preview dz-file-preview dz-complete');
+
+                    document.getElementById('dropzoneDevJobs').removeChild(borrar[0]);
+                    }
 
                 },
                 removedfile: function(file,response){    
                     console.log('El archivo borrado fue',file);
+
+                    // var borrar=document.getElementsByClassName('dz-preview dz-file-preview dz-complete');
+
+                    // document.getElementById('dropzoneDevJobs').removeChild(borrar[0]);
+                    file.previewElement.parentNode.removeChild(file.previewElement);
+                    // console.log(borrar);
+                    // console.log(document.getElementsByClassName('dz-preview dz-file-preview dz-complete'));
+
+                    params = {
+                        imagen: file.nombreServidor
+                    }
+                    axios.post('/vacantes/borrarimagen', params)
+                        .then(respuesta => console.log(respuesta))
                 }
             });
         });

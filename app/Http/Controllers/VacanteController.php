@@ -8,6 +8,7 @@ use App\Categoria;
 use App\Ubicacion;
 use App\Experiencia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class VacanteController extends Controller
 {
@@ -58,6 +59,20 @@ class VacanteController extends Controller
     public function store(Request $request)
     {
         //
+
+        // Validacion
+
+        $data = $request->validate([
+            'titulo'=>'required|min:8',
+            'categoria'=>'required',
+            'experiencia' => 'required',
+            'ubicacion'=>'required',
+            'salario' => 'required',
+            'descripcion' => 'required|min:50'
+        ]);
+
+
+        return 'desde store';
 
     }
 
@@ -114,8 +129,27 @@ class VacanteController extends Controller
 
         $imagen = $request->file('file');
         
-        return $imagen->extension();
+        $nombreImagen = time() . '.' . $imagen->extension();
 
+        // mover imagen al servidor
+        $imagen->move(public_path('storage/vacantes'),$nombreImagen);
+
+        return response()->json(['correcto'=>$nombreImagen]);
+
+    }
+
+    //borrar imagen via Axios
+
+    public function borrarimagen(Request $request){
+
+        if($request->ajax()){
+            $imagen = $request->get('imagen');
+
+            if(File::exists('storage/vacantes/' . $imagen)){
+                File::delete('storage/vacantes/' . $imagen);
+            }
+            return response('Imagen Eliminada', 200);
+        }
     }
 
 }

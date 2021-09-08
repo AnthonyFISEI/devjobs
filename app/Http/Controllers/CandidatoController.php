@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Candidato;
 use App\Vacante;
+use App\Candidato;
 use Illuminate\Http\Request;
+use App\Notifications\NuevoCandidato;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CandidatoController extends Controller
 {
@@ -13,9 +15,22 @@ class CandidatoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        //Leo el id que viene desde la vista
+        // dd($request->route('id'));
+
+        $id_vacante=$request->route('id');
+
+        // Obtener candidatos y vacante
+
+        $vacante=Vacante::findOrFail($id_vacante);
+
+        // dd($vacante->candidatos);
+
+        return view('candidatos.index',compact('vacante'));
         //
+
     }
 
     /**
@@ -88,6 +103,9 @@ class CandidatoController extends Controller
             'email'=>$data['email'],
             'cv'=> $nombreArchivo
         ]);
+
+        $reclutador=$vacante->reclutador;
+        $reclutador->notify( new NuevoCandidato($vacante->titulo,$vacante->id) );
 
         return back()->with('estado','Tus datos se enviaron Correctamente! Suerte!');
     }

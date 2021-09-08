@@ -30,7 +30,7 @@
     @endif
 <body class="bg-gray-200 min-h-screen leading-none">
     <div id="app">
-        <nav class="bg-gray-800 shadow-md py-2">
+        <nav class="bg-gray-800 shadow-md py-6">
             <div class="container mx-auto md:px-0">
                 <div class="flex items-center justify-around">
                     <a class="text-2xl text-white" href="{{ url('/') }}">
@@ -54,6 +54,13 @@
                             @else
 
                              <span class="text-gray-300 text-sm pr-4">{{ Auth::user()->name }}</span>
+
+
+                             <a
+                                href="{{route('notificaciones')}}"
+                                class="bg-teal-500 rounded-full mr-2 px-3 py-1 font-bold
+                                      text-sm text-white"
+                            >{{Auth::user()->unreadNotifications()->count()}}</a>
 
                                     <a class="no-underline hover:underline text-gray-300 text-sm p-3" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();

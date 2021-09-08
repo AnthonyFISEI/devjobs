@@ -3,6 +3,11 @@
 @section('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/css/lightbox.min.css" integrity="sha512-ZKX+BvQihRJPA8CROKBhDNvoc2aDMOdAlcm7TUQY+35XYtrd3yh95QOOhsPDQY9QnKE0Wqag9y38OIgEvb88cA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endsection
+
+@section('navegacion')
+    @include('ui.categoriasnav')
+@endsection
+
 @section('content')
     <h1 class="text-3xl text-center mt-10">{{$vacante->titulo}}</h1>
 
@@ -28,7 +33,7 @@
             <h2 class="text-2xl text-center mt-10 text-gray-700 mb-5">Conocimientos y Tecnologías</h2>
 
             @php
-                    
+
             $arraySkills = explode(",",$vacante->skills);
             @endphp
 
@@ -36,18 +41,20 @@
             <p class="inline-block border border-gray-400 rounded py-2 px-8 text-gray-700 my-2 ">
 
                 {{$skill}}
-            </p>  
+            </p>
             @endforeach
 
             <a href="/storage/vacantes/{{$vacante->imagen}}" data-lightbox="imagen" data-title="Vacante {{$vacante->titulo}}">
               <img src="/storage/vacantes/{{$vacante->imagen}}" alt="" class="w-40 mt-10">
-            </a>    
+            </a>
             <div class="descripcion mt-10 mb-5">
                 {!!$vacante->descripcion!!}
             </div>
         </div>
-        
+
+        @if($vacante->activa===1)
         @include('ui.contacto')
+        @endif
 
     </div>
 @endsection

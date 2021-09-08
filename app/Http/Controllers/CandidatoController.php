@@ -20,12 +20,14 @@ class CandidatoController extends Controller
         //Leo el id que viene desde la vista
         // dd($request->route('id'));
 
+
         $id_vacante=$request->route('id');
 
         // Obtener candidatos y vacante
 
         $vacante=Vacante::findOrFail($id_vacante);
 
+        $this->authorize('view', $vacante);
         // dd($vacante->candidatos);
 
         return view('candidatos.index',compact('vacante'));

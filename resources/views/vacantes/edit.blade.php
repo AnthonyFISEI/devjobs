@@ -12,19 +12,20 @@
 
 @section('content')
 
-    <h1 class="text-2xl text-center mt-10">Nueva Vacante</h1>
+    <h1 class="text-2xl text-center mt-10">Editar Vacante {{$vacante->titulo}}</h1>
 
-    <form action="{{route('vacantes.store')}}"
+    <form action="{{route('vacantes.update',['vacante' => $vacante->id])}}"
         method="POST"
         class="max-w-lg mx-auto my-10">
         @csrf
+        @method('PUT')
         <div class="mb-5">
             <label for="titulo" class="block text-gray-700 text-sm mb-2">Título Vacante:</label>
 
             <input id="titulo" type="text"
             class="p-3 bg-gray-100 rounded form-input w-full @error('email') is-invalid @enderror"
             name="titulo" placeholder="Título de la vacante"
-            value="{{old('titulo')}}">
+            value="{{$vacante->titulo}}">
 
             @error('titulo')
                 <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
@@ -48,7 +49,7 @@
 
                 @foreach($categorias as $categoria)
                     <option
-                    {{old('categoria') == $categoria->id ? 'selected' : ''}}
+                    {{$vacante->categoria_id == $categoria->id ? 'selected' : ''}}
                     value="{{$categoria->id}}">
                     {{$categoria->nombre}}</option>
 
@@ -76,7 +77,7 @@
 
                 @foreach($experiencias as $experiencia)
                     <option
-                    {{old('experiencia')==$experiencia->id ? 'selected' : ''}}
+                    {{$vacante->experiencia_id==$experiencia->id ? 'selected' : ''}}
                     value="{{$experiencia->id}}">
                     {{$experiencia->nombre}}</option>
 
@@ -105,7 +106,7 @@
 
                 @foreach($ubicaciones as $ubicacion)
                     <option
-                    {{old('ubicacion')==$ubicacion->id ? 'selected' : ''}}
+                    {{$vacante->ubicacion_id==$ubicacion->id ? 'selected' : ''}}
                     value="{{$ubicacion->id}}">
                     {{$ubicacion->nombre}}</option>
 
@@ -133,7 +134,7 @@
 
                 @foreach($salarios as $salario)
                     <option
-                    {{old('salario')==$salario->id ? 'selected' : ''}}
+                    {{$vacante->salario_id==$salario->id ? 'selected' : ''}}
                     value="{{$salario->id}}">
                     {{$salario->nombre}}</option>
 
@@ -152,7 +153,7 @@
             <label for="descripcion" class="block text-gray-700 text-sm mb-2">Descripción del Puesto:</label>
 
             <div class="editable p-3 bg-gray-100 rounded form-input w-full text-gray-700"></div>
-            <input type="hidden" name="descripcion" id="descripcion" value="{{old('descripcion')}}">
+            <input type="hidden" name="descripcion" id="descripcion" value="{{$vacante->descripcion}}">
 
             @error('descripcion')
             <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
@@ -168,7 +169,7 @@
 
             <div class="dropzone rounded bg-gray-100" id="dropzoneDevJobs"></div>
 
-            <input type="hidden" name="imagen" id="imagen" value="{{old('imagen')}}">
+            <input type="hidden" name="imagen" id="imagen" value="{{$vacante->imagen}}">
 
             @error('imagen')
             <div class="bg-red-100 border border-red-400 text-red-700 text-red-700
@@ -190,7 +191,7 @@
              $skills = ['HTML5', 'CSS3', 'CSSGrid', 'Flexbox', 'JavaScript', 'jQuery', 'Node', 'Angular', 'VueJS', 'ReactJS', 'React Hooks', 'Redux', 'Apollo', 'GraphQL', 'TypeScript', 'PHP', 'Laravel', 'Symfony', 'Python', 'Django', 'ORM', 'Sequelize', 'Mongoose', 'SQL', 'MVC', 'SASS', 'WordPress', 'Express', 'Deno', 'React Native', 'Flutter', 'MobX', 'C#', 'Ruby on Rails']
             @endphp
             <lista-skills :skills="{{json_encode($skills)}}"
-            :oldskills="{{json_encode(old('skills'))}}"
+            :oldskills="{{json_encode($vacante->skills)}}"
             >
 
             </lista-skills>
@@ -260,6 +261,7 @@
 
                         imagenPublicada.size =1234;
                         imagenPublicada.name = document.querySelector('#imagen').value;
+                        imagenPublicada.nombreServidor=document.querySelector('#imagen').value
 
                         this.options.addedfile.call(this, imagenPublicada);
                         this.options.thumbnail.call(this, imagenPublicada,`/storage/vacantes/${imagenPublicada.name}`);
@@ -309,7 +311,7 @@
                     // console.log(document.getElementsByClassName('dz-preview dz-file-preview dz-complete'));
 
                     params = {
-                        imagen: file.nombreServidor ?? document.querySelector('#imagen').value
+                        imagen: file.nombreServidor
                     }
                     axios.post('/vacantes/borrarimagen', params)
                         .then(respuesta => console.log(respuesta))
